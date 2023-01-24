@@ -14,14 +14,14 @@ pipeline {
     stage('Configure kubectl') {
       steps {
         sh '''
-        if [ ${BRANCH_NAME} == main ]; then
+        if [ ${env.BRANCH_NAME} == main ]; then
           export NAMESPACE=production
         else
           export NAMESPACE=staging
         fi
         '''
         sh "aws eks --region eu-west-2 update-kubeconfig --name exerciseCluster"
-        sh "kubectl config set-context --current --namespace=${NAMESPACE}"
+        sh "kubectl config set-context --current --namespace=${env.NAMESPACE}"
       }
     }
     stage('Deploy manifests') {
