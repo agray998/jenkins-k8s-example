@@ -18,6 +18,7 @@ pipeline {
           export NAMESPACE=production
         else
           export NAMESPACE=staging
+        fi
         '''
         sh "aws eks --region eu-west-2 update-kubeconfig --name exerciseCluster"
         sh "kubectl config set-context --current --namespace=${NAMESPACE}"
