@@ -1,8 +1,4 @@
 pipeline {
-  environment {
-    NAMESPACE = "production"
-    OLD_NAMESPACE = "staging"
-  }
   agent any
   stages {
 /*
@@ -17,7 +13,12 @@ pipeline {
 */
     stage('Configure kubectl') {
       steps {
-        sh "kubectl delete -f . --namespace ${OLD_NAMESPACE}"
+        sh '''
+        if [ ${BRANCH_NAME} == main ]; then
+          export NAMESPACE=production
+        else
+          export NAMESPACE=staging
+        '''
         sh "aws eks --region eu-west-2 update-kubeconfig --name exerciseCluster"
         sh "kubectl config set-context --current --namespace=${NAMESPACE}"
       }
